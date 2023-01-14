@@ -1,4 +1,6 @@
-provider "aws" {}
+provider "aws" {
+  region = "ap-south-1"
+}
 
 variable "vpc_cider_block" {}
 variable "subnet_cider_block" {}
@@ -19,4 +21,23 @@ resource "aws_subnet" "myapp-subnet-1" {
   tags = {
     "Name" = "${var.env_prefix}-subnet-1"
   }
-} 
+}
+
+resource "aws_internet_gateway" "myapp-igw" {
+  vpc_id = aws_vpc.myapp-vpc.id
+  tags = {
+    "Name" = "${var.env_prefix}-igw"
+  }
+}
+
+resource "aws_route_table" "myapp-rtb" {
+  vpc_id = aws_vpc.myapp-vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.myapp-igw.id
+  }
+  tags = {
+    "Name" = "${var.env_prefix}-rtb"
+  }
+}
