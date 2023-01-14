@@ -31,7 +31,7 @@ resource "aws_internet_gateway" "myapp-igw" {
   }
 }
 
-// Resource which cretes new route table.
+// Resource which creates new route table.
 # resource "aws_route_table" "myapp-rtb" {
 #   vpc_id = aws_vpc.myapp-vpc.id
 
@@ -66,6 +66,18 @@ resource "aws_security_group" "myapp-sg" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_block = [var.my_ip]
+    cidr_blocks = [var.my_ip]
+  }
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+    prefix_list_ids = []
+  }
+
+  tags = {
+    "Name" = "${var.env_prefix}-sg"
   }
 }
