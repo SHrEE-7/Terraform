@@ -8,7 +8,7 @@ variable "env_prefix" {}
 resource "aws_vpc" "myapp-vpc" {
   cidr_block = var.vpc_cider_block
   tags = {
-    "Name" = "${env.env_prefix}-vpc"
+    "Name" = "${var.env_prefix}-vpc"
   }
 }
 
@@ -17,6 +17,6 @@ resource "aws_subnet" "myapp-subnet-1" {
   cidr_block = var.subnet_cider_block
   availability_zone = var.avail_zone
   tags = {
-    "Name" = "Value"
+    "Name" = "${var.env_prefix}-subnet-1"
   }
-}
+} 
