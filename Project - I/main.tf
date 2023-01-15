@@ -2,15 +2,6 @@ provider "aws" {
   region = "ap-south-1"
 }
 
-variable "vpc_cider_block" {}
-variable "subnet_cider_block" {}
-variable "avail_zone" {}
-variable "env_prefix" {}
-# variable "my_ip" {}
-variable "instance_type" {}
-variable "public_key_location" {}
-
-
 resource "aws_vpc" "myapp-vpc" {
   cidr_block = var.vpc_cider_block
   tags = {
@@ -135,10 +126,6 @@ data "aws_ami" "latest-amazon-ami-image" {
   #   values = ["hvm"]
   # }
 }
-
-# output "aws_ami_id" {
-#   value = data.aws_ami.latest-amazon-ami-image.id
-# }
 
 resource "aws_key_pair" "ssh-key" {
   key_name = "Server-key"
