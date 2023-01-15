@@ -6,7 +6,7 @@ variable "vpc_cider_block" {}
 variable "subnet_cider_block" {}
 variable "avail_zone" {}
 variable "env_prefix" {}
-variable "my_ip" {}
+# variable "my_ip" {}
 variable "instance_type" {}
 variable "public_key_location" {}
 
@@ -100,7 +100,7 @@ resource "aws_default_security_group" "default-sg" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = [var.my_ip]
+    cidr_blocks = ["0.0.0.0/0"]       //[var.my_ip]
   }
 
   ingress {
