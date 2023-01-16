@@ -2,15 +2,15 @@ provider "aws" {
   region = "ap-south-1"
 }
 
-resource "aws_vpc" "myapp-vpc" {
+resource "aws_vpc" "myapp_vpc" {
   cidr_block = var.vpc_cider_block
   tags = {
     "Name" = "${var.env_prefix}-vpc"
   }
 }
 
-resource "aws_subnet" "myapp-subnet-1" {
-  vpc_id = aws_vpc.myapp-vpc.id
+resource "aws_subnet" "myapp_subnet_1" {
+  vpc_id = aws_vpc.myapp_vpc.id
   cidr_block = var.subnet_cider_block
   availability_zone = var.avail_zone
   tags = {
@@ -18,8 +18,8 @@ resource "aws_subnet" "myapp-subnet-1" {
   }
 }
 
-resource "aws_internet_gateway" "myapp-igw" {
-  vpc_id = aws_vpc.myapp-vpc.id
+resource "aws_internet_gateway" "myapp_igw" {
+  vpc_id = aws_vpc.myapp_vpc.id
   tags = {
     "Name" = "${var.env_prefix}-igw"
   }
@@ -27,11 +27,11 @@ resource "aws_internet_gateway" "myapp-igw" {
 
 // Resource which creates new route table.
 # resource "aws_route_table" "myapp-rtb" {
-#   vpc_id = aws_vpc.myapp-vpc.id
+#   vpc_id = aws_vpc.myapp_vpc.id
 
 #   route {
 #     cidr_block = "0.0.0.0/0"
-#     gateway_id = aws_internet_gateway.myapp-igw.id
+#     gateway_id = aws_internet_gateway.myapp_igw.id
 #   }
 #   tags = {
 #     "Name" = "${var.env_prefix}-rtb"
@@ -39,22 +39,22 @@ resource "aws_internet_gateway" "myapp-igw" {
 # }
 
 //Use Default reoute table & manage igw.
-resource "aws_default_route_table" "main-rtb" {
-  default_route_table_id = aws_vpc.myapp-vpc.default_route_table_id
+resource "aws_default_route_table" "main_rtb" {
+  default_route_table_id = aws_vpc.myapp_vpc.default_route_table_id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.myapp-igw.id
+    gateway_id = aws_internet_gateway.myapp_igw.id
   }
   tags = {
-    "Name" = "${var.env_prefix}-main-rtb"
+    "Name" = "${var.env_prefix}-main_rtb"
   }
 }
 
 //Secuirity Group
 # resource "aws_security_group" "myapp-sg" {
 #   name = "myapp-sg"
-#   vpc_id = aws_vpc.myapp-vpc.id
+#   vpc_id = aws_vpc.myapp_vpc.id
 
 #   ingress {
 #     from_port = 22
@@ -83,9 +83,9 @@ resource "aws_default_route_table" "main-rtb" {
 #   }
 # }
 
-//Default Security Group for myapp-VPC
-resource "aws_default_security_group" "default-sg" {
-  vpc_id = aws_vpc.myapp-vpc.id
+//Default Security Group for myapp_vpc
+resource "aws_default_security_group" "default_sg" {
+  vpc_id = aws_vpc.myapp_vpc.id
 
   ingress {
     from_port = 22
@@ -110,11 +110,11 @@ resource "aws_default_security_group" "default-sg" {
   }
 
   tags = {
-    "Name" = "${var.env_prefix}-default-sg"
+    "Name" = "${var.env_prefix}-default_sg"
   }
 }
 
-data "aws_ami" "latest-amazon-ami-image" {
+data "aws_ami" "latest_amazon_ami_image" {
   most_recent = true
   owners = ["amazon"]
   filter {
@@ -127,22 +127,22 @@ data "aws_ami" "latest-amazon-ami-image" {
   # }
 }
 
-resource "aws_key_pair" "ssh-key" {
+resource "aws_key_pair" "ssh_key" {
   key_name = "Server-key"
   public_key = file(var.public_key_location)
 }
 
 
-resource "aws_instance" "myapp-server" {
-  ami                    = data.aws_ami.latest-amazon-ami-image.id
+resource "aws_instance" "myapp_server" {
+  ami                    = data.aws_ami.latest_amazon_ami_image.id
   instance_type          = var.instance_type
   
-  subnet_id              = aws_subnet.myapp-subnet-1.id
-  vpc_security_group_ids = [aws_default_security_group.default-sg.id]
+  subnet_id              = aws_subnet.myapp_subnet_1.id
+  vpc_security_group_ids = [aws_default_security_group.default_sg.id]
   availability_zone      = var.avail_zone
 
   associate_public_ip_address = true
-  key_name = aws_key_pair.ssh-key.key_name
+  key_name = aws_key_pair.ssh_key.key_name
 
   tags = {
     "Name" = "${var.env_prefix}-server"
