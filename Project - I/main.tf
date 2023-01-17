@@ -132,6 +132,10 @@ resource "aws_key_pair" "ssh_key" {
   public_key = file(var.public_key_location)
 }
 
+# resource "aws_eip" "Elastic_ip" {
+#   instance = aws_instance.myapp_server.id
+# }
+
 
 resource "aws_instance" "myapp_server" {
   ami                    = data.aws_ami.latest_amazon_ami_image.id
